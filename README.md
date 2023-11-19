@@ -2,6 +2,7 @@
 - Tarisha Syira Mazaya Putri (5027211061)
 - Evan Darya Kusuma (5027211069)
 
+## Daftar Isi
 - [Soal 0](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/tree/main#soal-0)
 - [Soal 1](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/tree/main#soal-1)
 - [Soal 2](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/tree/main#soal-2)
