@@ -2,6 +2,7 @@
 - Tarisha Syira Mazaya Putri (5027211061)
 - Evan Darya Kusuma (5027211069)
 
+- [Soal 0](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/tree/main#soal-0)
 - [Soal 1](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/tree/main#soal-1)
 - [Soal 2](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/tree/main#soal-2)
 - [Soal 3](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/tree/main#soal-3)
@@ -27,6 +28,7 @@
 ![image](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/assets/107459188/fddd9bc4-91e5-4181-9f98-7e797f005785)
 Pertama-tama, membuat konfigurasi sesuai dengan topologi yang sudah dibuat.
 
+## Soal 1
 (1) Lakukan konfigurasi sesuai dengan peta yang sudah diberikan.
 
 - Aura
