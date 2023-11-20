@@ -403,7 +403,11 @@ subnet '192.241.4.0' netmask '255.255.255.0' {
 ```
 
 ## Output
-(gambar)
+- Revolte (Client switch 3)
+  ![WhatsApp Image 2023-11-15 at 5 04 40 PM](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/assets/107459188/2f5d9e4e-f0a4-4014-9550-d9e7ba0e13f3)
+
+- Sein (Client switch 4)
+  ![WhatsApp Image 2023-11-15 at 5 06 13 PM](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/assets/107459188/82fd192d-e988-40d9-8fd1-42edee2c2144)
 
 ## Soal 6
 Pada masing-masing worker PHP, lakukan konfigurasi virtual host untuk website berikut dengan menggunakan php 7.3. (6)
