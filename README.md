@@ -405,6 +405,409 @@ subnet '192.241.4.0' netmask '255.255.255.0' {
 ## Output
 (gambar)
 
+## Soal 6
+Pada masing-masing worker PHP, lakukan konfigurasi virtual host untuk website berikut dengan menggunakan php 7.3. (6)
+
+Untuk mengerjakan soal nomer 6 jalankan script dibawah ini di masing masing worker php
+```
+add-apt-repository ppa:ondrej/php
+apt update
+apt install apt-transport-https lsb-release wget -y
+wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg # Download the signing key
+sh -c 'echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list' # Add Ondrej's repo to sources list. sudo apt update
+apt install php7.3-fpm -y
+mkdir -p /run/php/
+chmod -R 755 /run/php/
+service php7.3-fpm restart
+
+apt install nginx -y
+service nginx start
+
+apt install wget unzip -y
+mkdir /var/www/granz.channel.IT16
+chown -R www-data:www-data /var/www/granz.channel.IT16
+cd /var/www/granz.channel.IT16
+wget https://cloud.amayuuki.my.id/api/public/dl/xbeUirGo/my_data/granz.channel.IT16.com.zip
+unzip -e *
+rm *.zip
+
+echo '
+server {
+    listen 80;
+    server_name _;
+    root /var/www/granz.channel.IT16;
+    index index.php index.html index.htm;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php7.3-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+} ' > /etc/nginx/sites-available/granz.channel.IT16.com
+
+ln -s /etc/nginx/sites-available/granz.channel.IT16.com /etc/nginx/sites-enabled/
+rm /etc/nginx/sites-enabled/default
+
+service nginx restart
+```
+
+untuk melakukan teting lakukan `lynx localhost` pada masing masing php worker
+outputnya akan seperti ini:
+![WhatsApp Image 2023-11-20 at 13 13 48_ca3bdc96](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/assets/102363994/3663ccd4-31b1-44e4-bd6e-4bf42f4bfff0)
+
+Soal 7
+Kepala suku dari Bredt Region memberikan resource server sebagai berikut:
+Lawine, 4GB, 2vCPU, dan 80 GB SSD.
+Linie, 2GB, 2vCPU, dan 50 GB SSD.
+Lugner 1GB, 1vCPU, dan 25 GB SSD.
+aturlah agar Eisen dapat bekerja dengan maksimal, lalu lakukan testing dengan 1000 request dan 100 request/second.
+
+Untuk melakukan testing pada `revolte` gunakan command:
+```
+ab -n 1000 -c 100 www.granz.channel.IT16.com
+```
+
+Setelah menjalankan Commandnya, hasil outputnya adalah seperti berikut:
+![image](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/assets/102363994/ea2e093b-d167-4c44-adb1-64fb1bfeaaba)
+tertulis bahwa waktu RPS yang dibutuhkan adalah `681.42 [#/sec] (mean)`
+
+## Soal 8
+Karena diminta untuk menuliskan grimoire, buatlah analisis hasil testing dengan 200 request dan 10 request/second masing-masing algoritma Load Balancer dengan ketentuan sebagai berikut:
+Nama Algoritma Load Balancer
+Report hasil testing pada Apache Benchmark
+Grafik request per second untuk masing masing algoritma. 
+Analisis
+
+Hasil dari nomer 8 dapat dilihat di [Grimoire](https://docs.google.com/document/d/1JEcSdA39WLR5ZqLMKsTmzZf9FLBApmYdLnE4w0KjMjk/edit)
+
+script algoritma Least Connection
+```
+echo ' upstream worker {
+    least_conn;
+    server 192.241.3.2;
+    server 192.241.3.3;
+    server 192.241.3.4;
+}
+
+server {
+    listen 80;
+    server_name granz.channel.IT16.com www.granz.channel.IT16.com;
+
+    root /var/www/html;
+
+    index index.html index.htm index.nginx-debian.html;
+
+    server_name _;
+
+    location / {
+        proxy_pass http://worker;
+    }
+} ' > /etc/nginx/sites-available/lb_php
+
+ln -s /etc/nginx/sites-available/lb_php /etc/nginx/sites-enabled/
+rm /etc/nginx/sites-enabled/default
+
+service nginx restart
+```
+
+script algoritma IP HASH
+```
+echo ' upstream worker {
+    ip_hash;
+    server 192.241.3.2;
+    server 192.241.3.3;
+    server 192.241.3.4;
+}
+
+server {
+    listen 80;
+    server_name granz.channel.IT16.com www.granz.channel.IT16.com;
+
+    root /var/www/html;
+
+    index index.html index.htm index.nginx-debian.html;
+
+    server_name _;
+
+    location / {
+        proxy_pass http://worker;
+    }
+} ' > /etc/nginx/sites-available/lb_php
+
+ln -s /etc/nginx/sites-available/lb_php /etc/nginx/sites-enabled/
+rm /etc/nginx/sites-enabled/default
+
+service nginx restart
+```
+
+script algoritma Generic Hash
+```
+echo ' upstream worker {
+    hash $request_uri consistent;
+    server 192.241.3.2;
+    server 192.241.3.3;
+    server 192.241.3.4;
+}
+
+server {
+    listen 80;
+    server_name granz.channel.IT16.com www.granz.channel.IT16.com;
+
+    root /var/www/html;
+
+    index index.html index.htm index.nginx-debian.html;
+
+    server_name _;
+
+    location / {
+        proxy_pass http://worker;
+    }
+} ' > /etc/nginx/sites-available/lb_php
+
+ln -s /etc/nginx/sites-available/lb_php /etc/nginx/sites-enabled/
+rm /etc/nginx/sites-enabled/default
+
+service nginx restart
+```
+
+Outputnya dapa di cek di [Grimoire](https://docs.google.com/document/d/1JEcSdA39WLR5ZqLMKsTmzZf9FLBApmYdLnE4w0KjMjk/edit)
+
+
+## Soal 9
+Dengan menggunakan algoritma Round Robin, lakukan testing dengan menggunakan 3 worker, 2 worker, dan 1 worker sebanyak 100 request dengan 10 request/second, kemudian tambahkan grafiknya pada grimoire.
+
+Hasil dari nomer 8 dapat dilihat di [Grimoire](https://docs.google.com/document/d/1JEcSdA39WLR5ZqLMKsTmzZf9FLBApmYdLnE4w0KjMjk/edit)
+
+Script 1 Worker
+```
+echo ' upstream worker {
+    server 192.241.3.2;
+}
+
+server {
+    listen 80;
+    server_name granz.channel.IT16.com www.granz.channel.IT16.com;
+
+    root /var/www/html;
+
+    index index.html index.htm index.nginx-debian.html;
+
+    server_name _;
+
+    location / {
+        proxy_pass http://worker;
+    }
+} ' > /etc/nginx/sites-available/lb_php
+
+ln -s /etc/nginx/sites-available/lb_php /etc/nginx/sites-enabled/
+rm /etc/nginx/sites-enabled/default
+
+service nginx restart
+```
+Scrip 2 Worker
+```
+echo ' upstream worker {
+    server 192.241.3.2;
+    server 192.241.3.3;
+}
+
+server {
+    listen 80;
+    server_name granz.channel.IT16.com www.granz.channel.IT16.com;
+
+    root /var/www/html;
+
+    index index.html index.htm index.nginx-debian.html;
+
+    server_name _;
+
+    location / {
+        proxy_pass http://worker;
+    }
+} ' > /etc/nginx/sites-available/lb_php
+
+ln -s /etc/nginx/sites-available/lb_php /etc/nginx/sites-enabled/
+rm /etc/nginx/sites-enabled/default
+
+service nginx restart
+```
+Outputnya dapa di cek di [Grimoire](https://docs.google.com/document/d/1JEcSdA39WLR5ZqLMKsTmzZf9FLBApmYdLnE4w0KjMjk/edit)
+
+## Soal 10
+Selanjutnya coba tambahkan konfigurasi autentikasi di LB dengan dengan kombinasi username: “netics” dan password: “ajkyyy”, dengan yyy merupakan kode kelompok. Terakhir simpan file “htpasswd” nya di /etc/nginx/rahasisakita/
+
+Script untuk no 10
+```
+mkdir /etc/nginx/rahasisakita
+
+htpasswd -c /etc/nginx/rahasisakita/htpasswd netics ajkIT16
+
+cp /etc/nginx/sites-available/default /etc/nginx/sites-available/lb_php
+
+echo ' upstream worker {
+    server 192.241.3.2;
+    server 192.241.3.3;
+    server 192.241.3.4;
+}
+
+server {
+    listen 80;
+    server_name granz.channel.IT16.com www.granz.channel.IT16.com;
+
+    root /var/www/html;
+
+    index index.html index.htm index.nginx-debian.html;
+
+    server_name _;
+
+    location / {
+        proxy_pass http://worker;
+        auth_basic "Restricted Content";
+        auth_basic_user_file /etc/nginx/rahasisakita/htpasswd;
+    }
+} ' > /etc/nginx/sites-available/lb_php
+
+ln -s /etc/nginx/sites-available/lb_php /etc/nginx/sites-enabled/
+rm /etc/nginx/sites-enabled/default
+
+service nginx restart
+```
+
+Lalu Output nya saat pertama akan terlihat seperti ini
+![WhatsApp Image 2023-11-20 at 13 35 53_33435056](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/assets/102363994/7d3d4644-7394-4bef-b945-a89d36ea6bb9)\
+
+Setelah itu akan diminta untuk memasukan username yaitu `netics`
+![WhatsApp Image 2023-11-20 at 13 36 09_68ecc973](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/assets/102363994/cc8d1662-dd6f-427f-96e1-6f8e338bd19a)
+
+Akhirnya diminta untuk memasukan Password yaitu `ajkIT16`
+![WhatsApp Image 2023-11-20 at 13 36 20_c69ef9d1](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/assets/102363994/0aeae7b8-d5a3-430a-8b0b-6fe56ec73161)
+
+Dan output nya akan masuk seperti ini
+![WhatsApp Image 2023-11-20 at 13 36 45_7e69038e](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/assets/102363994/0fba97d6-ef35-4ca5-af25-bb1221dbd1ea)
+
+## Soal 11
+Lalu buat untuk setiap request yang mengandung /its akan di proxy passing menuju halaman https://www.its.ac.id. (11)
+
+Script untuk no 11
+```
+echo 'upstream worker {
+    server 192.241.3.2;
+    server 192.241.3.3;
+    server 192.241.3.4;
+}
+
+server {
+    listen 80;
+    server_name granz.channel.IT16.com www.granz.channel.IT16.com;
+
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
+
+    location / {
+        proxy_pass http://worker;
+    }
+
+    location ~ /its {
+        proxy_pass https://www.its.ac.id;
+        proxy_set_header Host www.its.ac.id;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}' > /etc/nginx/sites-available/lb_php
+
+service nginx restart
+```
+
+Outputnya akan meredirect ke web ITS
+![WhatsApp Image 2023-11-20 at 13 38 57_a689ac77](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/assets/102363994/5ce66c91-8a75-45af-bf85-4fe611352169)
+
+## Soal 12
+Selanjutnya LB ini hanya boleh diakses oleh client dengan IP [Prefix IP].3.69, [Prefix IP].3.70, [Prefix IP].4.167, dan [Prefix IP].4.168. (12) hint: (fixed in dulu clinetnya)
+
+Script untuk no 12
+```
+echo 'upstream worker {
+    server 192.241.3.2;
+    server 192.241.3.3;
+    server 192.241.3.4;
+}
+
+server {
+    listen 80;
+    server_name granz.channel.IT16.com www.granz.channel.IT16.com;
+
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
+
+    location / {
+        allow 192.241.3.69;
+        allow 192.241.3.70;
+        allow 192.241.4.167;
+        allow 192.241.4.168;
+        deny all;
+        proxy_pass http://worker;
+    }
+
+    location /its {
+        proxy_pass https://www.its.ac.id;
+        proxy_set_header Host www.its.ac.id;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}' > /etc/nginx/sites-available/lb_php
+
+service nginx restart
+```
+Outputnya akan terdeny seperti ini
+![WhatsApp Image 2023-11-20 at 13 40 17_299e9a59](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/assets/102363994/775c78bf-3801-47ed-bf43-7f7c2d39e90b)
+
+Lalu untuk mencoba agar bisa di allow di client maka ditambahkan
+```
+echo 'upstream worker {
+    server 192.241.3.2;
+    server 192.241.3.3;
+    server 192.241.3.4;
+}
+
+server {
+    listen 80;
+    server_name granz.channel.IT16.com www.granz.channel.IT16.com;
+
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
+
+    location / {
+        allow 192.241.3.69;
+        allow 192.241.3.70;
+        allow 192.241.3.19;
+        allow 192.241.4.167;
+        allow 192.241.4.168;
+        deny all;
+        proxy_pass http://worker;
+    }
+
+    location /its {
+        proxy_pass https://www.its.ac.id;
+        proxy_set_header Host www.its.ac.id;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}' > /etc/nginx/sites-available/lb_php
+```
+
+Dan outpunya akan dapat masuk ke dalam www.granz.channel.IT16.com
+
+![WhatsApp Image 2023-11-20 at 13 36 45_7e69038e](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/assets/102363994/58b26ad7-f5f4-41b7-8a86-62c17449ae47)
+
+
 ## Soal 13
 Semua data yang diperlukan, diatur pada Denken dan harus dapat diakses oleh Frieren, Flamme, dan Fern. (13)
 
