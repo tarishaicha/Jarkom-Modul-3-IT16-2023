@@ -460,7 +460,7 @@ untuk melakukan teting lakukan `lynx localhost` pada masing masing php worker
 outputnya akan seperti ini:
 ![WhatsApp Image 2023-11-20 at 13 13 48_ca3bdc96](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/assets/102363994/3663ccd4-31b1-44e4-bd6e-4bf42f4bfff0)
 
-Soal 7
+## Soal 7
 Kepala suku dari Bredt Region memberikan resource server sebagai berikut:
 Lawine, 4GB, 2vCPU, dan 80 GB SSD.
 Linie, 2GB, 2vCPU, dan 50 GB SSD.
