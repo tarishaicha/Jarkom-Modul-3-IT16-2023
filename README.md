@@ -239,7 +239,7 @@ echo 'options {
 service bind9 restart
 ```
 ## Output
-(gambar)
+![image](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/assets/107459188/e802ef72-960b-4b22-86e4-c9aa99b3194f)
 
 ## Soal 2
 Client yang melalui Switch3 mendapatkan range IP dari [prefix IP].3.16 - [prefix IP].3.32 dan [prefix IP].3.64 - [prefix IP].3.80 (2)
@@ -292,7 +292,7 @@ service isc-dhcp-server restart
 service isc-dhcp-server status
 ```
 ## Output 
-(gambar)
+![image](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/assets/107459188/1dd9869b-63aa-43d6-8662-6d89be14748f)
 
 ## Soal 3
 Client yang melalui Switch4 mendapatkan range IP dari [prefix IP].4.12 - [prefix IP].4.20 dan [prefix IP].4.160 - [prefix IP].4.168
@@ -334,7 +334,7 @@ service isc-dhcp-server restart
 service isc-dhcp-server status
 ```
 ## Output
-(gambar)
+![image](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/assets/107459188/e40b9595-a34b-40a1-b0a8-e5c3acc85dcc)
 
 ## Soal 4
 Client mendapatkan DNS dari Heiter dan dapat terhubung dengan internet melalui DNS tersebut.
@@ -408,6 +408,9 @@ subnet '192.241.4.0' netmask '255.255.255.0' {
 
 - Sein (Client switch 4)
   ![WhatsApp Image 2023-11-15 at 5 06 13 PM](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/assets/107459188/82fd192d-e988-40d9-8fd1-42edee2c2144)
+
+- Aura
+![image](https://github.com/tarishaicha/Jarkom-Modul-3-IT16-2023/assets/107459188/ac7e37de-e083-4af1-9902-f75288c78676)
 
 ## Soal 6
 Pada masing-masing worker PHP, lakukan konfigurasi virtual host untuk website berikut dengan menggunakan php 7.3. (6)
